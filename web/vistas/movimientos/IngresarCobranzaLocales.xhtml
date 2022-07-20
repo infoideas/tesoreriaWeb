@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:em="http://java.sun.com/jsf/composite/componentes">
+    <body>
+        
+    <ui:composition template="./../../Template04.xhtml">
+            <ui:define name="content">
+            <div style="align: center">
+            <h:form id="EditForm">
+                <h:outputText id="Titulo" value="Ingresar cobranzas de locales en efectivo" style="font-size: 12pt; color: #045491; font-weight: bold" />
+                <br/> 
+                <br/> 
+                <p:commandButton icon="ui-icon-plus"   value="Nuevo movimiento"  
+                                 actionListener="#{cobranzalocalcontroller.nuevo()}" update="grabar,cuenta,saldoInicial,saldoFinal,fecha,locales"
+                                 style="font-size: 10pt; color: #045491"/>
+                <br/> 
+                <br/> 
+                    <p:panelGrid columns="4" style="background: white; width: 100%; border-width: thin; border-style: hidden">
+                        
+                        <h:outputText value="Usuario:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText value="#{cobranzalocalcontroller.obtenerNombreUsuario(cobranzalocalcontroller.idUsuario)} " style="font-size: 10pt; color: #045491"/>
+
+                        <p:outputLabel for="fecha" value="Fecha:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="fecha" value="#{cobranzalocalcontroller.fecMov}" style="font-size: 10pt; color: #045491">
+                            <f:convertDateTime timeZone="#{cobranzalocalcontroller.zona}" pattern="dd/MM/yyyy HH:mm" />        
+                        </h:outputText>
+                        
+                        <p:outputLabel value="Cuenta:" for="cuenta" style="font-size: 10pt; color: #045491"/>
+                        <p:selectOneMenu id="cuenta" value="#{cobranzalocalcontroller.cuentaFondos.id}" disabled="#{cobranzalocalcontroller.bloqueadoGrabar}"
+                                         required="true" style="font-size: 10pt; color: #045491 ">
+                            <f:selectItems value="#{listacuentascaja.items}"/>
+                            <p:ajax  listener="#{cobranzalocalcontroller.onSeleccionaCuenta()}" 
+                                        update="moneda,saldoInicial,saldoFinal"/>                              
+                        </p:selectOneMenu>   
+                        
+                        <h:outputText value="Moneda:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="moneda" value="#{cobranzalocalcontroller.obtieneMoneda(cobranzalocalcontroller.idMoneda).nombre} " style="font-size: 10pt; color: #045491"/>
+                       
+                        <h:outputText value="Saldo inicial:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="saldoInicial"  value="#{cobranzalocalcontroller.saldoInicialEfectivo}" 
+                                      style="float: right; font-size: 10pt; color: #045491; text-align: right">
+                                <f:convertNumber pattern="#,##0.00" />
+                        </h:outputText>
+                                         
+                        <h:outputText value="Saldo final:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="saldoFinal"  value="#{cobranzalocalcontroller.saldoFinalEfectivo}" 
+                                      style="float: right; font-size: 10pt; color: #045491; text-align: right">
+                                <f:convertNumber pattern="#,##0.00" />
+                        </h:outputText>                        
+                    </p:panelGrid>
+                        
+                <br/> 
+                    <p:dataTable id="locales" 
+                                   paginatorPosition="top"
+                                   value="#{cobranzalocalcontroller.listaLocales}" 
+                                   var="item"
+                                   rowIndexVar="fila"
+                                   style="font-size: 10pt; color: #045491"
+                                   reflow="true"
+                                   >
+                            
+                        <p:column style="width: 15%; font-size: 8pt; color: #045491; text-align: left">
+                            <f:facet name="header">
+                                <h:outputText value="Local"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.nombre}"/>
+                        </p:column>     
+                        
+                        <p:column style="width: 15%; font-size: 8pt; color: #045491; text-align: left">
+                            <f:facet name="header">
+                                <h:outputText value="Dirección"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.direccion}"/>
+                        </p:column>     
+                        
+                        <p:column style="width: 15%; font-size: 8pt; color: #045491; text-align: left">
+                            <f:facet name="header">
+                                <h:outputText value="Localidad"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.localidad}"/>
+                        </p:column>   
+                        
+                        <p:column style="font-size: 8pt; color: #045491;text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="Importe"/>
+                            </f:facet>
+                            <p:inputNumber value="#{item.valor}" required="true" size="20" disabled="#{cobranzalocalcontroller.bloqueadoGrabar}"
+                                           inputStyle="text-align: right" emptyValue="zero"
+                                     style="font-size: 10pt; color: #045491" maxlength="15">
+                                <f:validateLongRange minimum="0"/>
+                                <p:ajax process="@all"  listener="#{cobranzalocalcontroller.actualizaSaldoFinal()}" event="keyup" 
+                                    update="EditForm:saldoFinal"/>                                                                                        
+                            </p:inputNumber>        
+                        </p:column>  
+                        
+                        <p:column  style="width: 50px; text-align: center; font-size: 10pt; color: #045491">
+                            <f:facet name="header">
+                            </f:facet>
+                            <p:commandButton icon="ui-icon-trash" immediate="true" actionListener="#{cobranzalocalcontroller.eliminaLocal(item)}" 
+                                             disabled="#{cobranzalocalcontroller.bloqueadoGrabar}" update="EditForm:saldoFinal,EditForm:locales"  alt="Eliminar"/>
+                        </p:column>                             
+                        
+                        </p:dataTable>                        
+                        
+                <br/>                    
+                <p:commandButton disabled="#{cobranzalocalcontroller.bloqueadoGrabar}" id="grabar" onclick="PF('cd').show()" 
+                                 value="#{bundle.Save}" style="font-size: 10pt; color: #045491"/>                        
+                <p:commandButton action="/vistas/movimientos/Movimientos" value="#{bundle.Cancel}" ajax="false" immediate="true" style="font-size: 10pt; color: #045491"/>                        
+
+                <p:blockUI block="EditForm" trigger="confirmar">
+                    Espere por favor<br />
+                    <p:graphicImage value="/imagenes/connect_active.gif"/>
+                </p:blockUI>
+                
+                <p:confirmDialog message="Está seguro de grabar?" appendTo="@(body)"
+                                header="Grabar" severity="alert" widgetVar="cd" style="font-size: 10pt; color: #045491">
+                    <p:commandButton id="confirmar" actionListener="#{cobranzalocalcontroller.graba()}" 
+                                                 update="grabar,locales,EditForm,:growl" value="Sí" oncomplete="PF('cd').hide()" style="font-size: 10pt; color: #045491"/>
+                                <p:commandButton value="No" onclick="PF('cd').hide();" type="button" style="font-size: 10pt; color: #045491"/>
+                </p:confirmDialog>
+                
+            </h:form>
+            </div>
+            </ui:define>
+    </ui:composition>
+
+    </body>
+</html>

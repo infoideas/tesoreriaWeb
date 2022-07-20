@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CreateDlg" style="font-size: 10pt; color: #045491" widgetVar="CreateDialog" modal="true" resizable="false" appendTo="@(body)" header="Crear concepto"
+            onShow="PF('CreateDialog').initPosition()">
+            <h:form id="CreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{conceptocontroller.registroMod != null}">
+                        <p:outputLabel value="#{bundle.Nombre}" for="nombre" style="font-size: 10pt; color: #045491"/>
+                        <p:inputText id="nombre" value="#{conceptocontroller.registroMod.nombre}" size="30" required="true" style="font-size: 10pt; color: #045491"/>
+
+                        <p:outputLabel value="Tipo:" for="tipo" style="font-size: 10pt; color: #045491"/>                        
+                        <p:selectOneMenu id="tipo" value="#{conceptocontroller.registroMod.tipo}" 
+                                         required="true" style="width: 100%; font-size: 10pt; color: #045491 ">
+                                <f:selectItem itemLabel="Ingreso" itemValue="D"  />
+                                <f:selectItem itemLabel="Egreso" itemValue="C"  />
+                        </p:selectOneMenu>                       
+                    </p:panelGrid>
+                    
+                    
+                    <p:commandButton ajax="true" actionListener="#{conceptocontroller.graba()}" value="#{bundle.Save}" update="display,:ListaForm:datos,:growl" oncomplete="handleSubmit(args,'CreateDialog');"
+                                     style="font-size: 10pt; color: #045491"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="CreateDialog.hide()"
+                                     style="font-size: 10pt; color: #045491" immediate="true"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+       >
+    <h:body class=" bootstrap bd-body-1 
+ bd-homepage bd-pagebackground-3  bd-margins">
+    
+        <ui:composition template="./Template01.xhtml">      
+            <ui:define name="content">
+
+                
+                
+    <div class=" bd-content-13">
+    
+    <div class=" bd-htmlcontent-1 bd-margins" 
+ data-page-id="page.0">
+    <section class=" bd-section-12 bd-page-width bd-tagstyles " id="principal" data-section-title="principal">
+    <div class="bd-container-inner bd-margins clearfix">
+        <div class=" bd-layoutcontainer-10 bd-page-width  bd-columns bd-no-margins">
+    <div class="bd-container-inner">
+        <div class="container-fluid">
+            <div class="row 
+ bd-row-flex 
+ bd-row-align-middle">
+                <div class=" bd-columnwrapper-18 
+ col-lg-7
+ col-sm-8">
+    <div class="bd-layoutcolumn-18 bd-column" ><div class="bd-vertical-align-wrapper"></div></div>
+</div>
+	
+		<div class=" bd-columnwrapper-20 
+ col-lg-5
+ col-sm-4">
+    <div class="bd-layoutcolumn-20 bd-column" ><div class="bd-vertical-align-wrapper">
+            
+            <img width="80%"  src="./imagenes/logo_elduende.jpg" title="DuendeWeb" alt="DuendeWeb" />
+	
+		<div class=" bd-spacer-20 clearfix"></div>
+	
+		<p class=" bd-textblock-25 bd-content-element">
+    Sistema de gestión en línea&nbsp;<b><i>DuendeWeb</i></b>.<br/>Acceda a todas las opciones disponibles y administre<br/>sus pedidos de forma confiable y segura.
+</p>
+	
+
+<h:form class=" bd-form-3 ">
+                    
+    <h:outputText value="Seleccionar empresa" style="font-size: 14pt;" />
+                <br/>
+                <br/>
+                <p:focus/>
+                
+                <p:dataTable id="datos" styleClass="pDatTbl"
+                                   rows="15"
+                                   value="#{selempresacontroller.listaEmpresas}" 
+                                   var="item"
+                                   rowIndexVar="fila"
+                                   paginator="false">
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Código"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.id}" styleClass="label" />
+                        </p:column>
+                    
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Empresa"/>
+                            </f:facet>
+                            <h:commandLink  action="#{selempresacontroller.seleccionarEmpresa()}">
+                                <h:outputText value="#{item.nombre}" styleClass="hyperlink"/>
+                            </h:commandLink>
+                            
+                        </p:column>
+
+                    </p:dataTable>  
+                
+                
+            <br/>    
+    
+    
+            </h:form>                   
+                
+	
+		<div class=" bd-spacer-21 clearfix"></div>
+	
+		<div class=" bd-spacer-22 clearfix"></div>
+	
+		<div class=" bd-socialicons-2">
+    
+    
+</div>
+	
+		<div class=" bd-spacer-23 clearfix"></div>
+	
+                
+        </div></div>
+</div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</section>
+</div>
+</div>
+	
+		<div data-animation-time="250" class=" bd-smoothscroll-3"><a href="#" class=" bd-backtotop-1 ">
+    <span class="bd-icon-67 bd-icon "></span>
+</a></div>
+	
+		<div class=" bd-pagefooter-1 hidden-md hidden-sm hidden-xs hidden-lg">
+    <div class="bd-container-inner">
+        
+            <a href='http://www.daniel-diaz.net' target="_blank">Diseñado por Lic. en Sistemas de Información: Daniel Díaz</a>.
+    </div>
+</div>
+                
+
+                
+            </ui:define>
+
+        </ui:composition>        
+        
+    
+    
+    
+</h:body>
+</html>

@@ -1,0 +1,160 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:em="http://java.sun.com/jsf/composite/componentes">
+    <body>
+        
+    <ui:composition template="./../../Template04.xhtml">
+            <ui:define name="content">
+            <div style="align: center">
+            <h:form id="EditForm">
+                <h:outputText id="Titulo" value="Ingresar lote de movimientos" style="font-size: 12pt; color: #045491; font-weight: bold" />
+                <br/> 
+                <br/> 
+                <p:commandButton icon="ui-icon-plus"   value="Nuevo lote de movimientos"  
+                                 actionListener="#{movimientocontroller.nuevo()}" update="grabar,cuenta,detalleMov,saldoInicial,saldoFinal,fecha,createDetMov"
+                                 style="font-size: 10pt; color: #045491"/>
+                <br/> 
+                <br/>                 
+                
+                    <p:panelGrid columns="4" style="background: white; width: 100%; border-width: thin; border-style: hidden">
+                        
+                        <h:outputText value="Usuario:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText value="#{movimientocontroller.obtenerNombreUsuario(movimientocontroller.idUsuario)} " style="font-size: 10pt; color: #045491"/>
+
+                        <p:outputLabel for="fecha" value="Fecha:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="fecha" value="#{movimientocontroller.fecMov}" style="font-size: 10pt; color: #045491">
+                            <f:convertDateTime timeZone="#{movimientocontroller.zona}" pattern="dd/MM/yyyy HH:mm" />        
+                        </h:outputText>
+
+                        <p:outputLabel value="Tipo de movimiento:" for="tipoMov" style="font-size: 10pt; color: #045491"/>
+                        <p:selectOneMenu id="tipoMov" value="#{movimientocontroller.tipoMov}" 
+                                         required="true" style="font-size: 10pt; color: #045491 ">
+                            <f:selectItem itemLabel="Cobranza" itemValue='C' />
+                            <f:selectItem itemLabel="Movimiento administrativo" itemValue='A' />
+                        </p:selectOneMenu>
+
+                        <h:outputText />
+                        <h:outputText />
+                        
+                        <p:outputLabel value="Cuenta:" for="cuenta" style="font-size: 10pt; color: #045491"/>
+                        <p:selectOneMenu id="cuenta" value="#{movimientocontroller.cuentaFondos.id}" 
+                                         required="true" style="font-size: 10pt; color: #045491 ">
+                            <f:selectItems value="#{listacuentascaja.items}"/>
+                            <p:ajax process="@all" listener="#{movimientocontroller.onSeleccionaCuenta()}" 
+                                       update="moneda,saldoInicial,saldoFinal,detalleMov"/>                              
+                        </p:selectOneMenu>   
+                        
+                        <h:outputText value="Moneda:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="moneda" value="#{movimientocontroller.obtieneMoneda(movimientocontroller.idMoneda).nombre} " style="font-size: 10pt; color: #045491"/>
+                       
+                        <h:outputText value="Saldo inicial:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="saldoInicial"  value="#{movimientocontroller.saldoInicialEfectivo}" 
+                                      style="float: right; font-size: 10pt; color: #045491; text-align: right">
+                                <f:convertNumber pattern="#,##0.00" />
+                        </h:outputText>
+                                         
+                        <h:outputText value="Saldo final:" style="font-size: 10pt; color: #045491"/>
+                        <h:outputText id="saldoFinal"  value="#{movimientocontroller.saldoFinalEfectivo}" 
+                                      style="float: right; font-size: 10pt; color: #045491; text-align: right">
+                                <f:convertNumber pattern="#,##0.00" />
+                        </h:outputText>             
+                        
+                    </p:panelGrid>
+                        
+                <br/>                           
+                <br/> 
+                <p:commandButton id="createDetMov" icon="ui-icon-plus"   value="Agregar movimiento"  
+                                 disabled="#{movimientocontroller.bloqueadoGrabar}"
+                                 actionListener="#{movimientocontroller.nuevoMovimiento()}" update=":CreateFormMovimiento" oncomplete="PF('CreateDialogMovimiento').show()"
+                           style="font-size: 10pt; color: #045491" immediate="true" />
+
+                <br/>                           
+                <br/> 
+                    <p:dataTable id="detalleMov" 
+                                   paginatorPosition="top"
+                                   value="#{movimientocontroller.listaMovimientos}" 
+                                   var="item"
+                                   rowIndexVar="fila"
+                                   style="font-size: 10pt; color: #045491"
+                                   reflow="true"
+                                   >
+                            
+                        <p:column style="width: 15%; font-size: 8pt; color: #045491; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Concepto"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.concepto.nombre}"/>
+                        </p:column>     
+                        
+                        <p:column style="width: 15%; font-size: 8pt; color: #045491; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Plantilla"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.plantilla.numero} - #{item.plantilla.nombre}"/>
+                        </p:column>     
+                        
+                        <p:column style="width: 10%; font-size: 8pt; color: #045491; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Fecha"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fecMov}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{movimientocontroller.zona}" />
+                            </h:outputText>
+                        </p:column>     
+                        
+                        <p:column style="width: 30%; font-size: 8pt; color: #045491; text-align: center">
+                            <f:facet name="header">
+                                <h:outputText value="Detalle"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.observaciones}"/>
+                        </p:column>     
+                        
+                        <p:column style="width: 10%; font-size: 8pt; color: #045491;text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="Ingreso"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.dc eq 'D' ? item.valor : 0}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column style="width: 10%; font-size: 8pt; color: #045491;text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="Egreso"/>
+                            </f:facet>
+                            <h:outputText  value="#{item.dc eq 'C' ? item.valor : 0}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputText>
+                        </p:column>
+                        
+                        <p:column style="width: 10%; font-size: 8pt; color: #045491;text-align: right">
+                            <f:facet name="header">
+                                <h:outputText value="Saldo"/>
+                            </f:facet>
+                            <h:outputText  value="#{movimientocontroller.saldoInicialEfectivo + movimientocontroller.listaMovimientos.subList(0,fila + 1).stream().map(item->item.dc eq 'D' ? item.valor : (item.valor)*(-1)).sum()}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputText>                              
+                        </p:column>
+                        
+                        </p:dataTable>                        
+                        
+                        
+                    
+                    
+                <br/>                    
+                <p:commandButton id="grabar" actionListener="#{movimientocontroller.graba()}" disabled="#{movimientocontroller.bloqueadoGrabar}"
+                                 value="#{bundle.Save}" update=":growl" ajax="false" style="font-size: 10pt; color: #045491"/>                        
+                <p:commandButton action="/vistas/reportes/RepMovimientos" value="#{bundle.Cancel}" ajax="false" immediate="true" style="font-size: 10pt; color: #045491"/>                        
+
+            </h:form>
+            <ui:include src="CreateMovimiento.xhtml"/>                   
+                
+            </div>
+            </ui:define>
+    </ui:composition>
+
+    </body>
+</html>
