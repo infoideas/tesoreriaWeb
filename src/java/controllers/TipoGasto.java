@@ -14,6 +14,8 @@ public class TipoGasto {
     private String nombre;
     private int plantilla;
     private double valor;
+    private int orden;
+    private String descripcion;
 
     public TipoGasto() {
     }
@@ -48,6 +50,22 @@ public class TipoGasto {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    public int getOrden() {
+        return orden;
+    }
+
+    public void setOrden(int orden) {
+        this.orden = orden;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
     
     

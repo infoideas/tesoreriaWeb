@@ -71,18 +71,26 @@
                                    reflow="true"
                                    >
                             
-                        <p:column style="width: 60%; font-size: 8pt; color: #045491; text-align: left">
+                        <p:column style="width: 30%; font-size: 8pt; color: #045491; text-align: left">
                             <f:facet name="header">
                                 <h:outputText value="Gasto"/>
                             </f:facet>
                             <h:outputText  value="#{item.nombre}"/>
                         </p:column>     
                         
-                        <p:column style="font-size: 8pt; color: #045491;text-align: right">
+                        <p:column style="width: 40%; font-size: 8pt; color: #045491; text-align: left">
+                            <f:facet name="header">
+                                <h:outputText value="Descripción"/>
+                            </f:facet>
+                            <p:inputText value="#{item.descripcion}" style="width: 100%" maxlength="100"/>
+                        </p:column>     
+
+                        
+                        <p:column style="width: 20%; font-size: 8pt; color: #045491;text-align: right">
                             <f:facet name="header">
                                 <h:outputText value="Importe"/>
                             </f:facet>
-                            <p:inputNumber value="#{item.valor}" required="true" size="20" disabled="#{gastoscontroller.bloqueadoGrabar}"
+                            <p:inputNumber value="#{item.valor}" required="true" disabled="#{gastoscontroller.bloqueadoGrabar}"
                                            inputStyle="text-align: right" emptyValue="zero"
                                      style="font-size: 10pt; color: #045491" maxlength="15">
                                 <f:validateLongRange minimum="0" />
@@ -91,7 +99,7 @@
                             </p:inputNumber>        
                         </p:column>  
                         
-                        <p:column  style="width: 50px; text-align: center; font-size: 10pt; color: #045491">
+                        <p:column  style="width: 10%; text-align: center; font-size: 10pt; color: #045491">
                             <f:facet name="header">
                             </f:facet>
                             <p:commandButton icon="ui-icon-trash" immediate="true" actionListener="#{gastoscontroller.eliminaGasto(item)}" 

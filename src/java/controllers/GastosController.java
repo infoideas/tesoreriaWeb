@@ -231,7 +231,7 @@ public class GastosController extends BeanBase implements Serializable{
     public List buscaListaGastosUnidad(int idUnidad) throws Exception {
         CallableStatement s=null;
         ResultSet r=null;
-        int li_id,li_plantilla;
+        int li_id,li_plantilla,li_orden;
         String ls_nombre;
         List resultados = new ArrayList();
         TipoGasto item;
@@ -248,11 +248,13 @@ public class GastosController extends BeanBase implements Serializable{
                    li_id=r.getInt("idGasto");
                    ls_nombre=r.getString("nombre");
                    li_plantilla=r.getInt("plantilla");
+                   li_orden=r.getInt("orden");
 
                    item=new TipoGasto();
                    item.setId(li_id);
                    item.setNombre(ls_nombre);
                    item.setPlantilla(li_plantilla);
+                   item.setOrden(li_orden);
                    resultados.add(item);
                 } 
              s.close();
@@ -404,12 +406,19 @@ public class GastosController extends BeanBase implements Serializable{
         int li_id_ejercicio=obtieneEjercicioContable(getUsuarioConectado().getIdEmpresa(),lda_fecha); 
         System.out.println("Ejercicio: " + li_id_ejercicio);
         
+        listaMovimientos.clear();
         //Preparo los movimientos de ingreso de efectivo para cada uno de los locales
         for (TipoGasto item: listaGastos) {
             
             if(item.getValor() <= 0){
                 FacesContext context = FacesContext.getCurrentInstance();
-                context.addMessage("mensajes", new FacesMessage(FacesMessage.SEVERITY_INFO,"Debe ingresar el valor cobrado en el local " + item.getNombre(),""));
+                context.addMessage("mensajes", new FacesMessage(FacesMessage.SEVERITY_INFO,"Debe ingresar el importe del gasto: " + item.getNombre(),""));
+                return;
+            }
+
+            if(item.getDescripcion()==null || item.getDescripcion().isEmpty() ){
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage("mensajes", new FacesMessage(FacesMessage.SEVERITY_INFO,"Debe ingresar la descripción para el gasto: " + item.getNombre(),""));
                 return;
             }
             
@@ -418,7 +427,7 @@ public class GastosController extends BeanBase implements Serializable{
             movLocal.setIdUsuario(idUsuario);
             movLocal.setFecMov(fecha_mov.getTime());
             movLocal.setFecCarga(lda_fecha);
-            movLocal.setObservaciones("Gasto: " + item.getNombre());
+            movLocal.setObservaciones(item.getNombre().concat("-").concat(item.getDescripcion()));
             movLocal.setTipoMov('E');  //Tipo Mov: Egreso
             movLocal.setDc('C');  //Egreso o gasto
             movLocal.setTipoCambio(BigDecimal.ONE);
